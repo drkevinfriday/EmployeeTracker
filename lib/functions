@@ -1,0 +1,162 @@
+const veiwAlldepartments = ()=> {
+    const sql = `SELECT * FROM department`;
+  
+    db.query(sql, (err, rows) => {
+      if (err) throw err
+        console.table(rows)
+      });
+}
+// displays all employees
+const veiwAllEmployees = ()=> {
+    const sql = `SELECT * FROM employee`;
+  
+    db.query(sql, (err, rows) => {
+      if (err) throw err
+        console.table(rows)
+      });
+}
+// displays all roles
+const veiwAllRoles = ()=> {
+    const sql = `SELECT * FROM role`;
+  
+    db.query(sql, (err, rows) => {
+      if (err) throw err
+        console.table(rows)
+      });
+}
+
+
+const addDepartment = (depatmentName) =>{
+  // insert statement
+  const sql = `INSERT INTO department (name)
+  VALUES(?);`
+
+  const params = depatmentName;
+
+  db.query(sql,params, (err, rows) => {
+    if (err) throw err
+      console.table(rows)
+    });
+  }
+
+
+const addRole = (roleObj) =>{
+  // insert statement role
+  const sql = `INSERT INTO role (title, salary, department_id)
+  VALUES(?,?,?);`
+
+  const params = [roleObj.title, roleObj.salary, roleObj.department_id];
+
+  db.query(sql,params, (err, rows) => {
+    if (err) throw err
+      console.table(rows)
+    });
+  }
+const createRole = ()=> {
+    inquirer
+    .prompt([
+      {
+        name: 'title',
+        message: 'Please provide the title of the new role:',
+        
+      },
+      {
+        name: 'salary',
+        message: 'Please provide the salary of the new role',
+       
+      },
+      {
+        name: 'department_id',
+        message: 'Please provide the deparment id of the new role',
+       
+      },
+    ])
+    .then(answers=>addRole(answers))
+  }
+
+
+const addEmployee = (employeeObj) =>{
+  // insert statement employee
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+  VALUES(?,?,?,?);`
+
+  const params = [employeeObj.first_name, employeeObj.last_name,employeeObj.role_id, employeeObj.manager_id];
+
+  db.query(sql,params, (err, rows) => {
+    if (err) throw err
+      console.table(rows)
+    });
+  }
+const createEmployee = ()=> {
+  inquirer
+  .prompt([
+    {
+      name: 'first_name',
+      message: 'Please provide the first name of the new employee:',
+      
+    },
+    {
+      name: 'last_name',
+      message: 'Please provide the last name  of the new employee',
+     
+    },
+    {
+      name: 'employee_id',
+      message: 'Please provide the employee id of the new employee',
+     
+    },
+    {
+      name: 'manager_id',
+      message: 'Please provide the manager id of the new employee or leave it blank if no manager exist',
+     
+    },
+  ])
+  .then(answers=>addEmployee(answers))
+}
+
+
+const updateRole=(newRoleObj)=>{
+  const sql = `UPDATE employee SET role_id = ?  
+  WHERE id = ?`
+const params = [newRoleObj.role_id, newRoleObj.id]
+
+
+db.query(sql,params, (err, rows) => {
+  if (err) throw err
+    console.table(rows)
+  });
+}
+
+const roleSwitch = ()=> {
+  veiwAllEmployees()
+  veiwAlldepartments()
+  inquirer
+  .prompt([
+    {
+      name: 'id',
+      message: 'Please provide the id number of the employee your would like to change:',
+      
+    },
+    {
+      name: 'role_id',
+      message: 'Please provide the new role of the employee',
+     
+    }
+  ])
+  .then(answers=>updateRole(answers))
+
+}
+module.exports=  {
+    veiwAllRoles,
+    roleSwitch,
+    createRole,
+    updateRole,
+    veiwAllEmployees,
+    createEmployee,
+    addEmployee,
+    veiwAlldepartments,
+    addDepartment,
+  
+
+
+}
